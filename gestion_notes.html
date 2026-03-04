@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi des Performances | Appui2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family:'Segoe UI',sans-serif; background:#f4f6f9; margin:0; }
+        .glass-nav { display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:#007bff; color:#fff; flex-wrap:wrap; }
+        .glass-nav .logo { font-weight:bold; font-size:1.3em; }
+        .glass-nav .links a { color:#fff; text-decoration:none; margin-left:15px; font-size: 0.9em; }
+        
+        .main-container { max-width:1000px; margin:50px auto; padding:0 20px; }
+        .glass-card { background:#fff; padding:25px; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,0.1); margin-bottom:30px; }
+        
+        table.modern-table { width:100%; border-collapse:collapse; margin-top:20px; }
+        table.modern-table th, table.modern-table td { padding:12px; text-align:left; border-bottom:1px solid #eee; }
+        table.modern-table th { background:#f0f0f0; font-size: 0.85em; text-transform: uppercase; color: #666; }
+        
+        .student-profile { display:flex; align-items:center; gap:10px; }
+        .count-badge { background:#e0e0e0; padding:3px 8px; border-radius:10px; font-size:0.85em; color: #444; }
+        
+        .moyenne-pill { padding:4px 10px; border-radius:8px; font-weight:bold; color:#fff; font-size:0.85em; display: inline-block; }
+        .excellent { background:#28a745; }
+        .good { background:#007bff; }
+        .warning { background:#dc3545; }
+        .neutral { background: #95a5a6; }
+
+        .status-txt { font-weight:bold; font-size:0.85em; }
+        .status-txt.green { color:#28a745; }
+        .status-txt.red { color:#dc3545; }
+        
+        .btn-add-note { text-decoration:none; background:#007bff; color:#fff; padding:6px 12px; border-radius:8px; font-size:0.85em; display:inline-flex; align-items:center; gap:5px; transition: 0.2s; }
+        .btn-add-note:hover { background: #0056b3; }
+        
+        #loader { text-align: center; padding: 40px; }
+        .admin-footer { margin-top:20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .admin-footer a { text-decoration:none; color:#007bff; font-weight:bold; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<nav class="glass-nav">
+    <div class="logo">Appui<span>Stats</span></div>
+    <div class="links">
+        <a href="gestion_global.html"><i class="fa-solid fa-users"></i> Familles</a>
+        <a href="ajouter_note.html"><i class="fa-solid fa-pen"></i> Saisir Note</a>
+        <a href="#" onclick="logout()"><i class="fa-solid fa-power-off"></i></a>
+    </div>
+</nav>
+
+<div class="main-container">
+    <div class="glass-card">
+        <div class="header-section">
+            <h2><i class="fa-solid fa-chart-line"></i> Suivi Global des Élèves</h2>
+            <p style="color: #666; font-size: 0.9em;">Vue d'ensemble des moyennes générales calculées en temps réel.</p>
+        </div>
+
+        <div id="loader"><i class="fas fa-spinner fa-spin fa-2x" style="color:#007bff"></i></div>
+
+        <div class="table-responsive" id="tableContainer" style="display:none;">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Élève</th>
+                        <th>Notes saisies</th>
+                        <th>Moyenne Générale</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="statsBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="admin-footer">
+            <a href="index.html"><i class="fa-solid fa-chevron-left"></i> Retour au Portail</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    // Vérification session staff
+    if (!localStorage.getItem('staff_id')) { window.location.href = "login_staff.html"; }
+
+    async function calculerStats() {
+        try {
+            // 1. Récupérer tous les élèves
+            const { data: eleves, error: eErr } = await _supabase.from('eleves').select('*');
+            if (eErr) throw eErr;
+
+            // 2. Récupérer toutes les notes
+            const { data: evaluations, error: nErr } = await _supabase.from('evaluations').select('id_eleve, note');
+            if (nErr) throw nErr;
+
+            const tbody = document.getElementById('statsBody');
+            
+            eleves.forEach(eleve => {
+                // Filtrer les notes de cet élève précis
+                const notesEleve = evaluations.filter(n => n.id_eleve === eleve.id_eleve);
+                const nbNotes = notesEleve.length;
+                
+                let moyenne = null;
+                let colorClass = 'neutral';
+                let statusHtml = '<span class="status-txt">En attente</span>';
+
+                if (nbNotes > 0) {
+                    const somme = notesEleve.reduce((acc, curr) => acc + parseFloat(curr.note), 0);
+                    moyenne = (somme / nbNotes).toFixed(2);
+
+                    if (moyenne >= 14) colorClass = 'excellent';
+                    else if (moyenne >= 10) colorClass = 'good';
+                    else colorClass = 'warning';
+
+                    statusHtml = moyenne >= 10 
+                        ? '<span class="status-txt green">Admis</span>' 
+                        : '<span class="status-txt red">Soutien requis</span>';
+                }
+
+                const row = `
+                    <tr>
+                        <td>
+                            <div class="student-profile">
+                                <i class="fa-solid fa-circle-user" style="color:#bdc3c7"></i>
+                                <strong>${eleve.nom_enfant.toUpperCase()} ${eleve.prenom_enfant}</strong>
+                            </div>
+                        </td>
+                        <td><span class="count-badge">${nbNotes} note(s)</span></td>
+                        <td><span class="moyenne-pill ${colorClass}">${moyenne ? moyenne + " / 20" : "Pas de note"}</span></td>
+                        <td>${statusHtml}</td>
+                        <td>
+                            <a href="ajouter_note.html?id_eleve=${eleve.id_eleve}" class="btn-add-note">
+                                <i class="fa-solid fa-plus"></i> Noter
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('tableContainer').style.display = 'block';
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loader').innerHTML = "Erreur de chargement des statistiques.";
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+
+    calculerStats();
+</script>
+</body>
+</html>
