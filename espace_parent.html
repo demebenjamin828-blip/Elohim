@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Parent | ELOHIM APPUI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --gold: #facc15; --emerald: #064e3b; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+        body { background: #022c22; background-image: radial-gradient(circle at top right, #065f46, #022c22); color: white; min-height: 100vh; padding: 20px; }
+        
+        .navbar { max-width: 1100px; margin: 0 auto 30px; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 15px 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--gold); text-decoration: none; }
+        .logout-btn { color: #f87171; text-decoration: none; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+
+        .main-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 25px; }
+        
+        /* Responsive pour mobile */
+        @media (max-width: 768px) { .main-container { grid-template-columns: 1fr; } }
+
+        .profile-card { background: rgba(15, 23, 42, 0.7); padding: 30px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; height: fit-content; }
+        .avatar { width: 80px; height: 80px; background: var(--gold); color: #022c22; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 2rem; font-weight: 800; }
+        .info-item { text-align: left; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85rem; }
+        .info-item span { color: var(--gold); display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+
+        .welcome-banner { background: linear-gradient(135deg, #facc15, #eab308); color: #022c22; padding: 30px; border-radius: 25px; margin-bottom: 25px; position: relative; }
+        
+        .children-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .child-card { background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); position: relative; transition: 0.3s; }
+        .child-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .child-class { position: absolute; top: 15px; right: 15px; background: var(--gold); color: #022c22; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; }
+
+        .action-btn { display: block; width: 100%; padding: 12px; text-align: center; background: rgba(250, 204, 21, 0.1); color: var(--gold); text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 0.85rem; margin-top: 15px; transition: 0.3s; border: 1px solid var(--gold); }
+        .action-btn:hover { background: var(--gold); color: #022c22; }
+        
+        #loader { text-align: center; padding: 50px; grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">ELOHIM <span>APPUI</span></a>
+        <div onclick="logout()" class="logout-btn"><i class="fa-solid fa-power-off"></i> DÉCONNEXION</div>
+    </nav>
+
+    <div class="main-container">
+        <div class="profile-card">
+            <div class="avatar" id="parentInitial">-</div>
+            <h3 id="parentNom" style="margin-bottom: 20px;">Chargement...</h3>
+            <div class="info-item"><span>Email</span><div id="parentEmail">...</div></div>
+            <div class="info-item"><span>Téléphone</span><div id="parentTel">...</div></div>
+        </div>
+
+        <div class="content-area">
+            <div class="welcome-banner">
+                <h2>Tableau de bord</h2>
+                <p>Suivez les résultats de vos enfants en temps réel.</p>
+            </div>
+
+            <h3 style="color: var(--gold); margin-bottom: 20px;">MES ENFANTS</h3>
+
+            <div id="loader"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+            <div class="children-grid" id="childrenGrid">
+                </div>
+        </div>
+    </div>
+
+<script>
+    // 1. Initialisation Supabase
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    // 2. Vérification de la session
+    const parentId = localStorage.getItem('parent_id');
+    if (!parentId) {
+        window.location.href = "login.html";
+    }
+
+    async function chargerEspaceParent() {
+        try {
+            // A. Récupérer les infos du parent
+            const { data: parent, error: pErr } = await _supabase
+                .from('parents')
+                .select('*')
+                .eq('id_parent', parentId)
+                .single();
+
+            if (pErr) throw pErr;
+
+            document.getElementById('parentNom').innerText = parent.nom_complet;
+            document.getElementById('parentEmail').innerText = parent.email;
+            document.getElementById('parentTel').innerText = parent.telephone || 'Non renseigné';
+            document.getElementById('parentInitial').innerText = parent.nom_complet.charAt(0).toUpperCase();
+
+            // B. Récupérer les enfants
+            const { data: enfants, error: eErr } = await _supabase
+                .from('eleves')
+                .select('*')
+                .eq('id_parent', parentId);
+
+            if (eErr) throw eErr;
+
+            const grid = document.getElementById('childrenGrid');
+            document.getElementById('loader').style.display = 'none';
+
+            if (enfants.length > 0) {
+                enfants.forEach(enfant => {
+                    grid.innerHTML += `
+                        <div class="child-card">
+                            <span class="child-class">${enfant.classe}</span>
+                            <h4><i class="fa-solid fa-child"></i> ${enfant.prenom_enfant}</h4>
+                            <a href="admin_bulletin.html?id=${enfant.id_eleve}" class="action-btn">
+                                <i class="fa-solid fa-file-invoice"></i> VOIR LES NOTES
+                            </a>
+                        </div>
+                    `;
+                });
+            } else {
+                grid.innerHTML = '<p style="opacity: 0.5;">Aucun enfant trouvé rattaché à ce compte.</p>';
+            }
+
+        } catch (err) {
+            console.error("Erreur de chargement:", err);
+            alert("Erreur lors de la récupération des données.");
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+
+    // Lancer le chargement
+    chargerEspaceParent();
+</script>
+
+</body>
+</html>
