@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails Évaluations | ELOHIM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --gold: #facc15; --emerald: #042f2e; }
+        body { background: var(--emerald); color: white; font-family: 'Plus Jakarta Sans', sans-serif; padding: 30px; }
+        
+        .container { max-width: 900px; margin: 0 auto; }
+        .back-link { color: var(--gold); text-decoration: none; font-size: 0.9rem; font-weight: 700; display: inline-block; margin-bottom: 20px; }
+        
+        .header-card { 
+            background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; display: flex; align-items: center; gap: 20px;
+        }
+        .avatar-circle { width: 60px; height: 60px; background: var(--gold); color: #042f2e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; }
+        
+        h2 { margin: 0; font-size: 1.4rem; }
+        .classe-badge { background: rgba(250, 204, 21, 0.1); color: var(--gold); padding: 4px 12px; border-radius: 8px; font-size: 0.8rem; }
+
+        table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.2); border-radius: 15px; overflow: hidden; }
+        th { background: rgba(255,255,255,0.05); color: var(--gold); text-align: left; padding: 15px; font-size: 0.8rem; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; }
+        
+        .note-circle { 
+            display: inline-block; width: 40px; height: 40px; line-height: 40px; 
+            text-align: center; border-radius: 10px; font-weight: 800;
+            background: rgba(250, 204, 21, 0.1); color: var(--gold);
+        }
+        .empty { text-align: center; padding: 50px; opacity: 0.5; }
+        #loader { text-align: center; padding: 40px; color: var(--gold); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="espace_parent.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Retour au tableau de bord</a>
+
+    <div id="loader"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Récupération des notes...</p></div>
+
+    <div id="content" style="display: none;">
+        <div class="header-card">
+            <div class="avatar-circle" id="enfantInitiale">?</div>
+            <div>
+                <h2 id="enfantNom">Chargement...</h2>
+                <span class="classe-badge" id="enfantClasse">Classe : -</span>
+            </div>
+        </div>
+
+        <h3>Détails des Évaluations</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Matière</th>
+                    <th>Type</th>
+                    <th>Note / 20</th>
+                </tr>
+            </thead>
+            <tbody id="notesTable">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // 1. Initialisation Supabase
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    // 2. Récupération de l'ID élève dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const idEleve = urlParams.get('id');
+    const parentId = localStorage.getItem('parent_id');
+
+    if (!idEleve || !parentId) {
+        window.location.href = "login.html";
+    }
+
+    async function chargerEvaluations() {
+        try {
+            // A. Infos de l'enfant (Vérification sécurité : doit appartenir au parent connecté)
+            const { data: enfant, error: eErr } = await _supabase
+                .from('eleves')
+                .select('*')
+                .eq('id_eleve', idEleve)
+                .eq('id_parent', parentId)
+                .single();
+
+            if (eErr || !enfant) throw new Error("Accès non autorisé.");
+
+            document.getElementById('enfantNom').innerText = `${enfant.prenom_enfant} ${enfant.nom_enfant}`;
+            document.getElementById('enfantClasse').innerText = `Classe : ${enfant.classe}`;
+            document.getElementById('enfantInitiale').innerText = enfant.prenom_enfant.charAt(0).toUpperCase();
+
+            // B. Récupérer les notes depuis la table 'evaluations'
+            const { data: notes, error: nErr } = await _supabase
+                .from('evaluations')
+                .select('*')
+                .eq('id_eleve', idEleve)
+                .order('date_eval', { ascending: false });
+
+            if (nErr) throw nErr;
+
+            const tableBody = document.getElementById('notesTable');
+            if (notes.length > 0) {
+                notes.forEach(n => {
+                    const dateFmt = new Date(n.date_eval).toLocaleDateString('fr-FR');
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${dateFmt}</td>
+                            <td style="font-weight: 700;">${n.matiere}</td>
+                            <td>${n.type_eval}</td>
+                            <td><span class="note-circle">${n.note}</span></td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="4" class="empty">Aucune note enregistrée pour le moment.</td></tr>`;
+            }
+
+            // C. Affichage final
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loader').innerHTML = `<p style="color:red">Erreur : ${err.message}</p>`;
+        }
+    }
+
+    chargerEvaluations();
+</script>
+
+</body>
+</html>
