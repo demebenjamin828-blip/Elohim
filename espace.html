@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Personnel | ELOHIM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root { --gold: #facc15; --dark: #022c22; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at top left, #065f46, #022c22);
+            color: white; min-height: 100vh; padding: 20px;
+        }
+
+        /* Barre de Navigation */
+        nav { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px; background: var(--glass); backdrop-filter: blur(10px);
+            border-radius: 15px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .logo { font-weight: 800; color: var(--gold); font-size: 1.4rem; }
+        .logout-btn { color: #f87171; text-decoration: none; font-weight: 600; cursor: pointer; }
+
+        .main-container { max-width: 1000px; margin: auto; }
+        
+        .glass-card { 
+            background: var(--glass); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .welcome-header { margin-bottom: 30px; }
+        .role-badge { 
+            display: inline-block; background: var(--gold); color: var(--dark); 
+            padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 800;
+            margin-top: 10px; text-transform: uppercase;
+        }
+
+        .section-title { margin: 30px 0 20px; color: var(--gold); border-bottom: 1px solid rgba(250, 204, 21, 0.2); padding-bottom: 10px; }
+
+        .grid-container { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; 
+        }
+
+        .item-card { 
+            background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
+        }
+        .item-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.07); }
+        .item-card h4 { margin-bottom: 10px; color: #fff; }
+        .item-card .desc { color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+
+        .btn-action { 
+            display: inline-block; background: var(--gold); color: var(--dark); 
+            padding: 10px 20px; border-radius: 10px; text-decoration: none; 
+            font-weight: 700; font-size: 0.85rem; transition: 0.3s;
+        }
+        .btn-action:hover { opacity: 0.9; box-shadow: 0 0 15px rgba(250, 204, 21, 0.4); }
+
+        #loader { text-align: center; padding: 50px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">ELOHIM</div>
+    <div class="logout-btn" onclick="logout()"><i class="fa-solid fa-power-off"></i> Déconnexion</div>
+</nav>
+
+<div class="main-container">
+    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--gold)"></i></div>
+
+    <div class="glass-card" id="mainContent" style="display:none;">
+        <div class="welcome-header">
+            <h2 id="userName">✨ Bonjour, ...</h2>
+            <p class="role-badge" id="userRole">Chargement...</p>
+        </div>
+
+        <div id="eleveSection" style="display:none;">
+            <h3 class="section-title"><i class="fa-solid fa-book-open"></i> Vos ressources pédagogiques</h3>
+            <div class="grid-container" id="coursGrid"></div>
+        </div>
+
+        <div id="parentSection" style="display:none;">
+            <h3 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Suivi de vos enfants</h3>
+            <div class="grid-container" id="enfantsGrid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Initialisation Supabase
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    // 2. Vérification Session (localStorage remplace $_SESSION)
+    const parentId = localStorage.getItem('parent_id');
+    const eleveId = localStorage.getItem('eleve_id'); // Supposons que tu aies aussi un login élève
+    const userName = localStorage.getItem('parent_nom') || "Utilisateur";
+
+    if (!parentId && !eleveId) {
+        window.location.href = "login.html";
+    }
+
+    async function chargerEspace() {
+        document.getElementById('userName').innerText = `✨ Bonjour, ${userName}`;
+        
+        try {
+            if (parentId) {
+                // --- MODE PARENT ---
+                document.getElementById('userRole').innerText = "Parent | Session sécurisée";
+                document.getElementById('parentSection').style.display = 'block';
+
+                const { data: enfants, error } = await _supabase
+                    .from('eleves')
+                    .select('*')
+                    .eq('id_parent', parentId);
+
+                if (error) throw error;
+
+                const grid = document.getElementById('enfantsGrid');
+                enfants.forEach(e => {
+                    grid.innerHTML += `
+                        <div class="item-card">
+                            <h4>${e.prenom_enfant} ${e.nom_enfant}</h4>
+                            <p class="desc">Consultez les notes et les appréciations pour le trimestre en cours.</p>
+                            <a href="admin_bulletin.html?id=${e.id_eleve}" class="btn-action">
+                                <i class="fa-solid fa-chart-line"></i> VOIR LE BULLETIN
+                            </a>
+                        </div>`;
+                });
+
+            } else {
+                // --- MODE ELEVE ---
+                document.getElementById('userRole').innerText = "Élève | Session sécurisée";
+                document.getElementById('eleveSection').style.display = 'block';
+
+                const { data: cours, error } = await _supabase
+                    .from('cours')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+
+                const grid = document.getElementById('coursGrid');
+                cours.forEach(c => {
+                    grid.innerHTML += `
+                        <div class="item-card">
+                            <h4>${c.titre}</h4>
+                            <p class="desc">${c.description}</p>
+                            <a href="${c.fichier}" target="_blank" class="btn-action">
+                                <i class="fa-solid fa-download"></i> TÉLÉCHARGER
+                            </a>
+                        </div>`;
+                });
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+
+    chargerEspace();
+</script>
+</body>
+</html>
