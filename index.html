@@ -3,137 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELOHIM APPUI | Accueil</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>ELOHIM APPUI | Excellence Scolaire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { 
-            --primary: #064e3b; 
             --gold: #facc15; 
-            --bg: #f8fafc;
+            --emerald: #064e3b; 
+            --dark: #020617; 
+            --glass: rgba(255, 255, 255, 0.03);
         }
         
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
         
         body { 
-            background-color: var(--bg);
-            color: #1e293b;
+            background: var(--dark);
+            color: white;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            /* Dégradé de fond subtil pour donner de la profondeur */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(6, 78, 59, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(20, 184, 166, 0.1) 0%, transparent 40%);
         }
 
-        .container {
+        .hero-container {
             text-align: center;
-            width: 90%;
-            max-width: 800px;
+            padding: 20px;
+            width: 100%;
+            max-width: 900px;
         }
 
-        .logo-area {
-            margin-bottom: 40px;
+        .logo-box {
+            margin-bottom: 50px;
         }
 
-        .logo-area h1 {
-            font-size: 3rem;
-            color: var(--primary);
+        .logo-box h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
             font-weight: 800;
-            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 1;
         }
 
-        .logo-area h1 span {
-            color: #d97706; /* Un orange-doré plus chaud */
+        .logo-box h1 span {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(250, 204, 21, 0.2);
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            color: #64748b;
-            margin-top: 10px;
+        .logo-box p {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            font-weight: 300;
         }
 
-        .grid-buttons {
+        .grid-options {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
         }
 
-        .choice-btn {
-            background: white;
-            padding: 40px 20px;
-            border-radius: 20px;
+        .card-option {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 45px 30px;
+            border-radius: 30px;
             text-decoration: none;
-            color: var(--primary);
-            border: 2px solid #e2e8f0;
-            transition: all 0.3s ease;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
 
-        .choice-btn i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--primary);
+        .card-option:hover {
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        .choice-btn h3 {
-            font-size: 1.4rem;
+        .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: rgba(250, 204, 21, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            color: var(--gold);
+            transition: 0.3s;
+        }
+
+        .card-option:hover .icon-wrapper {
+            background: var(--gold);
+            color: var(--dark);
+            transform: scale(1.1);
+        }
+
+        .card-option h3 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
             font-weight: 700;
         }
 
-        .choice-btn p {
-            font-size: 0.9rem;
+        .card-option p {
             color: #94a3b8;
-            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        /* Effet au survol */
-        .choice-btn:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            background: #f0fdf4; /* Un vert très très léger */
-        }
-
-        .footer {
+        .footer-tag {
             margin-top: 60px;
+            color: #475569;
             font-size: 0.8rem;
-            color: #94a3b8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         @media (max-width: 600px) {
-            .grid-buttons { grid-template-columns: 1fr; }
-            .logo-area h1 { font-size: 2.2rem; }
+            .grid-options { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo-area">
+    <div class="hero-container">
+        <div class="logo-box">
             <h1>ELOHIM <span>APPUI</span></h1>
-            <p class="subtitle">Plateforme Scolaire & Suivi des Notes</p>
+            <p>Le portail numérique de la réussite scolaire.</p>
         </div>
 
-        <div class="grid-buttons">
-            <a href="login_parent.html" class="choice-btn">
-                <i class="fa-solid fa-user-graduate"></i>
-                <h3>Espace Parent</h3>
-                <p>Pour suivre les résultats de vos enfants</p>
+        <div class="grid-options">
+            <a href="login_parent.html" class="card-option">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-house-chimney-user"></i>
+                </div>
+                <h3>Portail Parent</h3>
+                <p>Suivi des notes, absences et progression académique.</p>
             </a>
 
-            <a href="login_staff.html" class="choice-btn">
-                <i class="fa-solid fa-chalkboard-user"></i>
-                <h3>Espace Staff</h3>
-                <p>Pour la gestion des notes et de l'école</p>
+            <a href="login_staff.html" class="card-option">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3>Portail Staff</h3>
+                <p>Administration, gestion des notes et outils pédagogiques.</p>
             </a>
         </div>
 
-        <div class="footer">
-            © 2026 ELOHIM APPUI - Excellence et Rigueur
+        <div class="footer-tag">
+            © 2026 - Excellence & Rigueur
         </div>
     </div>
 
