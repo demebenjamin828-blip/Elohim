@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Parent | ELOHIM APPUI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --gold: #facc15; --emerald: #064e3b; --glass: rgba(15, 23, 42, 0.8); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at top right, #065f46, #022c22) fixed; 
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+
+        .login-card { 
+            max-width: 400px; width: 100%; background: var(--glass); 
+            backdrop-filter: blur(20px); padding: 40px; border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.1); text-align: center;
+        }
+
+        .icon-box { 
+            width: 70px; height: 70px; background: rgba(250, 204, 21, 0.1); 
+            color: var(--gold); border-radius: 20px; display: flex; 
+            justify-content: center; align-items: center; margin: 0 auto 20px; font-size: 2rem;
+        }
+
+        h2 { color: white; margin-bottom: 10px; font-weight: 800; }
+        p { color: #94a3b8; margin-bottom: 30px; font-size: 0.9rem; }
+
+        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gold); }
+        
+        input { 
+            width: 100%; padding: 14px 15px 14px 45px; border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); 
+            color: white; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+        .btn-login { 
+            width: 100%; padding: 16px; background: var(--gold); color: #022c22; 
+            border: none; border-radius: 12px; font-weight: 800; cursor: pointer;
+            transition: 0.3s; font-size: 1rem;
+        }
+        .btn-login:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+
+        .alert { 
+            padding: 12px; border-radius: 10px; margin-bottom: 20px; 
+            display: none; font-size: 0.85rem; font-weight: 600;
+        }
+        .error { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid #f87171; }
+
+        .footer-links { margin-top: 25px; font-size: 0.85rem; color: #94a3b8; }
+        .footer-links a { color: var(--gold); text-decoration: none; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="icon-box"><i class="fa-solid fa-users"></i></div>
+    <h2>Espace Parent</h2>
+    <p>Accédez au suivi scolaire de vos enfants</p>
+
+    <div id="errorMsg" class="alert error"></div>
+
+    <form id="loginForm">
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email parent" required>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password" placeholder="Mot de passe" required>
+        </div>
+        <button type="submit" id="submitBtn" class="btn-login">SE CONNECTER</button>
+    </form>
+
+    <div class="footer-links">
+        Pas encore inscrit ? <a href="inscription.html">Créer un compte famille</a>
+        <br><br>
+        <a href="index.html" style="opacity: 0.6;"><i class="fa-solid fa-arrow-left"></i> Retour à l'accueil</a>
+    </div>
+</div>
+
+<script>
+    // Configuration Supabase
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const errorDiv = document.getElementById('errorMsg');
+        
+        btn.disabled = true;
+        btn.innerText = "Vérification...";
+        errorDiv.style.display = "none";
+
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+
+        try {
+            // On cherche le parent par son email
+            const { data: user, error } = await _supabase
+                .from('parents')
+                .select('*')
+                .eq('email', email)
+                .maybeSingle();
+
+            if (error) throw error;
+
+            if (user && user.mot_de_passe === pass) {
+                // Succès : On stocke les infos dans le navigateur (Session)
+                localStorage.setItem('parent_id', user.id_parent);
+                localStorage.setItem('parent_nom', user.nom_complet);
+                localStorage.setItem('user_role', 'parent');
+
+                window.location.href = "espace_parent.html";
+            } else {
+                throw new Error("Email ou mot de passe incorrect.");
+            }
+        } catch (err) {
+            errorDiv.innerText = err.message;
+            errorDiv.style.display = "block";
+            btn.disabled = false;
+            btn.innerText = "SE CONNECTER";
+        }
+    });
+</script>
+
+</body>
+</html>
