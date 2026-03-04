@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Famille | ELOHIM APPUI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --gold: #facc15; --emerald: #064e3b; --dark: #020617; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at top right, #065f46, #022c22); 
+            color: white; min-height: 100vh; padding: 40px 20px;
+            display: flex; justify-content: center;
+        }
+
+        .container { 
+            max-width: 650px; width: 100%; 
+            background: rgba(15, 23, 42, 0.75); 
+            backdrop-filter: blur(20px); padding: 40px; 
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h2 { font-weight: 800; font-size: 2.2rem; letter-spacing: -1px; }
+        .header h2 span { color: var(--gold); }
+
+        .section-label { 
+            color: var(--gold); font-size: 0.8rem; font-weight: 800; 
+            text-transform: uppercase; margin: 30px 0 15px; 
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        
+        input, .custom-select { 
+            width: 100%; padding: 14px; border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(255,255,255,0.05); color: white; outline: none;
+            font-size: 0.95rem; transition: 0.3s;
+        }
+        
+        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23facc15' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+        }
+
+        option { background: #1e293b; color: white; }
+
+        .enfant-box { 
+            background: rgba(0,0,0,0.2); padding: 20px; 
+            border-radius: 18px; border-left: 4px solid var(--gold); margin-bottom: 15px;
+        }
+
+        .btn-add { 
+            background: rgba(250, 204, 21, 0.05); border: 2px dashed rgba(250, 204, 21, 0.3); 
+            color: var(--gold); width: 100%; padding: 12px; 
+            border-radius: 12px; cursor: pointer; font-weight: 700; margin-bottom: 25px;
+        }
+
+        .btn-register { 
+            background: var(--gold); color: #022c22; width: 100%; 
+            padding: 18px; border: none; border-radius: 12px; 
+            font-weight: 800; cursor: pointer; font-size: 1.1rem;
+        }
+
+        .btn-register:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .alert { padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; font-weight: 600; display: none; }
+        .success { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; }
+        .error { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid #f87171; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>ELOHIM <span>APPUI</span></h2>
+        <p style="color: #94a3b8;">Portail d'inscription des familles</p>
+    </div>
+
+    <div id="msgBox" class="alert"></div>
+
+    <form id="regForm">
+        <div class="section-label"><i class="fa-solid fa-user-shield"></i> Responsable de la Famille</div>
+        <div class="grid">
+            <input type="text" id="nom_parent" placeholder="NOM" required>
+            <input type="text" id="prenom_parent" placeholder="PRÉNOM" required>
+        </div>
+        <div class="grid">
+            <input type="email" id="email" placeholder="Adresse Email" required>
+            <input type="tel" id="tel_parent" placeholder="Téléphone" required>
+        </div>
+        <div class="grid">
+            <input type="password" id="password" placeholder="Mot de passe (6 min)" required>
+            <input type="password" id="password_confirm" placeholder="Confirmer" required>
+        </div>
+
+        <div class="section-label"><i class="fa-solid fa-graduation-cap"></i> Enfants à Inscrire</div>
+        <div id="enfants-list">
+            <div class="enfant-box">
+                <div class="grid">
+                    <input type="text" class="enf-nom" placeholder="NOM DE L'ENFANT" required>
+                    <input type="text" class="enf-prenom" placeholder="PRÉNOM" required>
+                </div>
+                <select class="custom-select enf-classe" style="margin-top: 10px;" required>
+                    <option value="" disabled selected>-- Sélectionner la classe --</option>
+                    <optgroup label="COLLÈGE"><option value="6eme">6ème</option><option value="5eme">5ème</option><option value="4eme">4ème</option><option value="3eme">3ème</option></optgroup>
+                    <optgroup label="LYCÉE"><option value="2nde">2nde</option><option value="1ere">1ère</option><option value="Tle">Terminale</option></optgroup>
+                </select>
+            </div>
+        </div>
+
+        <button type="button" class="btn-add" onclick="ajouterEnfant()">
+            <i class="fa-solid fa-plus-circle"></i> Ajouter un autre enfant
+        </button>
+
+        <button type="submit" id="submitBtn" class="btn-register">VALIDER L'INSCRIPTION FAMILLE</button>
+        
+        <p style="text-align:center; margin-top:20px; font-size:0.9rem;">
+            Déjà inscrit ? <a href="login.html" style="color:var(--gold); font-weight:bold; text-decoration:none;">Se connecter</a>
+        </p>
+    </form>
+</div>
+
+<script>
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    function ajouterEnfant() {
+        const container = document.getElementById('enfants-list');
+        const div = document.createElement('div');
+        div.className = 'enfant-box';
+        div.innerHTML = `
+            <div class="grid">
+                <input type="text" class="enf-nom" placeholder="NOM DE L'ENFANT" required>
+                <input type="text" class="enf-prenom" placeholder="PRÉNOM" required>
+            </div>
+            <select class="custom-select enf-classe" style="margin-top: 10px;" required>
+                <option value="" disabled selected>-- Sélectionner la classe --</option>
+                <optgroup label="COLLÈGE"><option value="6eme">6ème</option><option value="5eme">5ème</option><option value="4eme">4ème</option><option value="3eme">3ème</option></optgroup>
+                <optgroup label="LYCÉE"><option value="2nde">2nde</option><option value="1ere">1ère</option><option value="Tle">Terminale</option></optgroup>
+            </select>
+        `;
+        container.appendChild(div);
+    }
+
+    document.getElementById('regForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const msgBox = document.getElementById('msgBox');
+        
+        // Reset message
+        msgBox.style.display = 'none';
+        
+        // Vérification mot de passe
+        const pass = document.getElementById('password').value;
+        const confirm = document.getElementById('password_confirm').value;
+        if(pass !== confirm || pass.length < 6) {
+            msgBox.innerText = "Mots de passe non identiques ou trop courts.";
+            msgBox.className = "alert error";
+            msgBox.style.display = "block";
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Création du compte...";
+
+        try {
+            // 1. Inscription Parent
+            const nomComplet = document.getElementById('nom_parent').value.toUpperCase() + " " + document.getElementById('prenom_parent').value;
+            const email = document.getElementById('email').value;
+            const tel = document.getElementById('tel_parent').value;
+
+            const { data: parentData, error: pError } = await _supabase
+                .from('parents')
+                .insert([{ nom_complet: nomComplet, email: email, telephone: tel, mot_de_passe: pass }])
+                .select();
+
+            if (pError) throw pError;
+            const parentId = parentData[0].id_parent;
+
+            // 2. Inscription Enfants
+            const nomsEnf = document.querySelectorAll('.enf-nom');
+            const prenomsEnf = document.querySelectorAll('.enf-prenom');
+            const classesEnf = document.querySelectorAll('.enf-classe');
+            
+            let dataEnfants = [];
+            nomsEnf.forEach((el, i) => {
+                dataEnfants.push({
+                    id_parent: parentId,
+                    nom_enfant: el.value.toUpperCase(),
+                    prenom_enfant: prenomsEnf[i].value,
+                    classe: classesEnf[i].value
+                });
+            });
+
+            const { error: eError } = await _supabase.from('eleves').insert(dataEnfants);
+            if (eError) throw eError;
+
+            msgBox.innerText = "Compte Famille créé ! Redirection...";
+            msgBox.className = "alert success";
+            msgBox.style.display = "block";
+            
+            setTimeout(() => window.location.href = "login.html", 2000);
+
+        } catch (err) {
+            msgBox.innerText = "Erreur : " + err.message;
+            msgBox.className = "alert error";
+            msgBox.style.display = "block";
+            btn.disabled = false;
+            btn.innerText = "VALIDER L'INSCRIPTION FAMILLE";
+        }
+    });
+</script>
+</body>
+</html>
