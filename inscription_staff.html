@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recrutement Staff | ELOHIM APPUI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --gold: #facc15; --emerald: #064e3b; --dark: #020617; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at top right, #065f46, #022c22) fixed; 
+            color: white; min-height: 100vh; padding: 40px 20px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .container { 
+            max-width: 450px; width: 100%; 
+            background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(20px); padding: 40px; 
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header i { font-size: 3rem; color: var(--gold); margin-bottom: 15px; }
+        .header h2 { font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; }
+
+        .input-group { margin-bottom: 15px; position: relative; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gold); opacity: 0.7; }
+
+        input, select { 
+            width: 100%; padding: 14px 15px 14px 45px; border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(255,255,255,0.05); color: white; outline: none;
+            transition: 0.3s; font-size: 0.95rem;
+        }
+        
+        input:focus, select:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+        select option { background: #0f172a; color: white; }
+
+        .btn-staff { 
+            background: var(--gold); color: #022c22; width: 100%; 
+            padding: 16px; border: none; border-radius: 12px; 
+            font-weight: 800; cursor: pointer; margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-staff:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(250, 204, 21, 0.2); }
+        .btn-staff:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .alert { padding: 12px; border-radius: 10px; margin-bottom: 20px; display: none; text-align: center; font-size: 0.9rem; font-weight: 600; }
+        .error { background: rgba(248, 113, 113, 0.2); color: #f87171; border: 1px solid #f87171; }
+        .success { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <i class="fa-solid fa-user-gear"></i>
+        <h2>REJOINDRE L'ÉQUIPE</h2>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Espace de recrutement Staff</p>
+    </div>
+
+    <div id="msg" class="alert"></div>
+
+    <form id="staffForm">
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="nom_complet" placeholder="Nom et Prénom" required>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email professionnel" required>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-briefcase"></i>
+            <select id="role" required style="padding-left: 45px;">
+                <option value="" disabled selected>-- Choisir votre rôle --</option>
+                <option value="professeur">Professeur</option>
+                <option value="administrateur">Administrateur</option>
+                <option value="coordinateur">Coordinateur</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password" placeholder="Mot de passe" required>
+        </div>
+        
+        <button type="submit" id="btnSubmit" class="btn-staff">CRÉER MON COMPTE STAFF</button>
+
+        <p style="text-align:center; margin-top:25px; font-size:0.85rem; color: #94a3b8;">
+            Déjà membre de l'équipe ? <a href="login_staff.html" style="color:var(--gold); font-weight:bold; text-decoration:none;">Se connecter</a>
+        </p>
+    </form>
+</div>
+
+<script>
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    document.getElementById('staffForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('msg');
+        const btn = document.getElementById('btnSubmit');
+
+        msg.style.display = "none";
+        btn.disabled = true;
+        btn.innerText = "Traitement en cours...";
+
+        const staffData = {
+            nom_complet: document.getElementById('nom_complet').value,
+            email: document.getElementById('email').value,
+            role: document.getElementById('role').value,
+            mot_de_passe: document.getElementById('password').value // Note: En prod, utilisez l'Auth de Supabase pour le hachage
+        };
+
+        try {
+            const { error } = await _supabase.from('staff').insert([staffData]);
+            
+            if (error) throw error;
+
+            msg.innerText = "Compte créé avec succès !";
+            msg.className = "alert success";
+            msg.style.display = "block";
+            
+            setTimeout(() => window.location.href = "login_staff.html", 2000);
+
+        } catch (err) {
+            msg.innerText = "Erreur : " + err.message;
+            msg.className = "alert error";
+            msg.style.display = "block";
+            btn.disabled = false;
+            btn.innerText = "CRÉER MON COMPTE STAFF";
+        }
+    });
+</script>
+
+</body>
+</html>
