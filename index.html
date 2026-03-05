@@ -3,151 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ELOHIM APPUI | Portail Académique</title>
+<title>ELOHIM APPUI | Excellence Digitale</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
 :root{
-    --primary:#0f172a;
-    --accent:#0d9488;
-    --light:#f8fafc;
+--gold:#facc15;
+--emerald:#064e3b;
+--dark:#020617;
 }
 
 body{
-    font-family:'Inter',sans-serif;
-    background:var(--light);
-    color:var(--primary);
+font-family:'Plus Jakarta Sans',sans-serif;
+background:linear-gradient(135deg,#020617,#0f172a 40%,#064e3b);
+color:white;
+min-height:100vh;
+overflow:hidden;
+position:relative;
 }
 
-/* NAVBAR */
-.navbar{
-    background:white;
-    box-shadow:0 2px 15px rgba(0,0,0,0.05);
+/* Animated Glow Background */
+body::before{
+content:"";
+position:absolute;
+width:600px;
+height:600px;
+background:radial-gradient(circle,var(--gold),transparent 70%);
+top:-200px;
+left:-200px;
+opacity:0.15;
+animation:moveGlow 12s infinite alternate ease-in-out;
 }
 
-.navbar-brand{
-    font-weight:800;
-    letter-spacing:-1px;
-}
-
-.navbar-brand span{
-    color:var(--accent);
+@keyframes moveGlow{
+from{transform:translate(0,0);}
+to{transform:translate(200px,150px);}
 }
 
 /* HERO */
 .hero{
-    padding:100px 0 60px;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
 }
 
-.hero h1{
-    font-weight:800;
-    font-size:clamp(2rem,4vw,3.5rem);
+.hero-title{
+font-size:clamp(2rem,5vw,4rem);
+font-weight:800;
+letter-spacing:-2px;
 }
 
-.hero p{
-    color:#64748b;
-    font-size:1.1rem;
+.hero-title span{
+background:linear-gradient(90deg,var(--gold),white);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
-/* CARDS */
+/* Cards */
 .portal-card{
-    background:white;
-    border-radius:20px;
-    padding:40px 30px;
-    text-align:center;
-    transition:0.3s ease;
-    border:1px solid #e2e8f0;
-    text-decoration:none;
-    color:inherit;
-    height:100%;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+border-radius:30px;
+padding:50px 30px;
+border:1px solid rgba(255,255,255,0.1);
+transition:0.5s;
+position:relative;
+overflow:hidden;
+color:white;
+text-decoration:none;
+}
+
+.portal-card::before{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(120deg,transparent,rgba(250,204,21,0.2),transparent);
+transform:translateX(-100%);
+transition:0.8s;
+}
+
+.portal-card:hover::before{
+transform:translateX(100%);
 }
 
 .portal-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 20px 40px rgba(0,0,0,0.08);
-    border-color:var(--accent);
+transform:translateY(-15px) scale(1.03);
+box-shadow:0 25px 60px rgba(250,204,21,0.3);
+border-color:var(--gold);
 }
 
-.icon-box{
-    width:70px;
-    height:70px;
-    background:rgba(13,148,136,0.1);
-    color:var(--accent);
-    border-radius:15px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:0 auto 20px;
-    font-size:1.8rem;
+.icon-circle{
+width:100px;
+height:100px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto 25px;
+font-size:2.5rem;
+background:rgba(250,204,21,0.1);
+color:var(--gold);
+transition:0.4s;
 }
 
-/* BUTTON */
-.btn-main{
-    background:var(--accent);
-    color:white;
-    border:none;
-    padding:10px 25px;
-    border-radius:30px;
-    font-weight:600;
+.portal-card:hover .icon-circle{
+background:var(--gold);
+color:var(--emerald);
+transform:rotateY(180deg);
 }
 
-.btn-main:hover{
-    background:#0f766e;
+.badge-premium{
+background:var(--gold);
+color:var(--emerald);
+padding:6px 15px;
+border-radius:20px;
+font-size:0.8rem;
+font-weight:600;
+margin-bottom:15px;
+display:inline-block;
 }
 
-/* FOOTER */
+/* Footer */
 footer{
-    margin-top:80px;
-    padding:20px 0;
-    text-align:center;
-    background:white;
-    border-top:1px solid #e2e8f0;
-    color:#64748b;
+position:absolute;
+bottom:20px;
+width:100%;
+text-align:center;
+color:#94a3b8;
+font-size:0.9rem;
 }
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg">
+<section class="hero">
 <div class="container">
-<a class="navbar-brand" href="#">ELOHIM <span>APPUI</span></a>
-<a href="#" class="btn btn-main">Contact</a>
-</div>
-</nav>
 
-<!-- HERO -->
-<section class="hero text-center">
-<div class="container">
-<h1 class="mb-3">Portail Académique Numérique</h1>
-<p class="mb-5">Plateforme moderne de suivi scolaire et d'excellence éducative.</p>
+<div class="badge-premium">PORTAIL OFFICIEL 2026</div>
+
+<h1 class="hero-title mb-3">
+ELOHIM <span>APPUI</span>
+</h1>
+
+<p class="lead text-secondary mb-5">
+Plateforme numérique d'excellence académique
+</p>
 
 <div class="row justify-content-center g-4">
 
 <div class="col-md-5 col-lg-4">
-<a href="login_parent.html" class="portal-card">
-<div class="icon-box">
-<i class="fa-solid fa-users"></i>
+<a href="login_parent.html" class="portal-card d-block">
+<div class="icon-circle">
+<i class="fa-solid fa-people-roof"></i>
 </div>
-<h5 class="fw-bold">Espace Parent</h5>
-<p class="text-muted small">Accédez aux résultats et bulletins scolaires.</p>
+<h3 class="fw-bold">Espace Parent</h3>
+<p class="text-secondary small">
+Suivi académique, résultats et bulletins en temps réel.
+</p>
 </a>
 </div>
 
 <div class="col-md-5 col-lg-4">
-<a href="login_staff.html" class="portal-card">
-<div class="icon-box">
+<a href="login_staff.html" class="portal-card d-block">
+<div class="icon-circle">
 <i class="fa-solid fa-user-shield"></i>
 </div>
-<h5 class="fw-bold">Espace Administration</h5>
-<p class="text-muted small">Gestion académique et administrative.</p>
+<h3 class="fw-bold">Espace Administration</h3>
+<p class="text-secondary small">
+Gestion complète des élèves et du personnel.
+</p>
 </a>
 </div>
 
 </div>
+
 </div>
 </section>
 
