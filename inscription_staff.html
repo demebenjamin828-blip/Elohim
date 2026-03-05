@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Administration | ELOHIM</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-body">
+
+    <a href="index.html" class="back-link">
+        <i class="fa-solid fa-house"></i> Retour à l'accueil
+    </a>
+
+    <div class="glass-card animated-fade-in">
+        <div class="throbber-container" id="mainLoader">
+            <div class="throbber-line"></div>
+        </div>
+
+        <div class="brand">
+            <i class="fa-solid fa-user-shield logo-icon"></i>
+            <h2>Inscription <span>Administration</span></h2>
+            <p class="subtitle">Créez votre accès sécurisé</p>
+        </div>
+
+        <form id="staffForm" class="modern-form">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label><i class="fa-solid fa-user"></i> Nom</label>
+                    <input type="text" placeholder="Ex: TRAORE" required>
+                </div>
+                <div class="input-group">
+                    <label>Prénom</label>
+                    <input type="text" placeholder="Ex: Moussa" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-envelope"></i> Email Professionnel</label>
+                <input type="email" placeholder="nom@elohim.com" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label><i class="fa-solid fa-briefcase"></i> Fonction</label>
+                    <select required>
+                        <option value="" disabled selected>Choisir...</option>
+                        <option value="Administrateur">Administrateur</option>
+                        <option value="Professeur">Professeur</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label style="color:#facc15"><i class="fa-solid fa-key"></i> Code École</label>
+                    <input type="password" placeholder="Code requis" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label><i class="fa-solid fa-lock"></i> Mot de passe</label>
+                    <input type="password" required>
+                </div>
+                <div class="input-group">
+                    <label>Confirmation</label>
+                    <input type="password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                CRÉER MON COMPTE
+            </button>
+            
+            <div class="form-footer">
+                <p>Déjà un compte ? <a href="login_staff.html">Se connecter</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Gestion de l'animation comme sur ton index
+        document.getElementById('staffForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Empêche le rechargement car GitHub n'a pas de PHP
+            
+            document.getElementById('mainLoader').classList.add('show-loader');
+            
+            // Simulation d'inscription pour la démo GitHub
+            setTimeout(() => {
+                alert("Système en mode démonstration sur GitHub.\nLe compte ne sera pas créé en base de données sans serveur PHP.");
+                document.getElementById('mainLoader').classList.remove('show-loader');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
