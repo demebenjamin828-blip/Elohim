@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion Staff | ELOHIM APPUI</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+/* SQUELETTE VISUEL DE TON INDEX */
+:root{ --gold:#facc15; --emerald:#064e3b; --dark:#020617; }
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(135deg, #020617, #0f172a 40%, #064e3b);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glow animé de l'index */
+body::before {
+    content: ""; position: absolute; width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--gold), transparent 70%);
+    top: -200px; left: -200px; opacity: 0.15;
+    animation: moveGlow 12s infinite alternate ease-in-out;
+    z-index: 0;
+}
+@keyframes moveGlow { from { transform: translate(0,0); } to { transform: translate(200px, 150px); } }
+
+/* Style Glass-card de l'index */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    z-index: 1;
+    transition: 0.5s;
+}
+.glass-card:hover { border-color: var(--gold); box-shadow: 0 25px 60px rgba(250,204,21,0.2); }
+
+.brand h1 span {
+    background: linear-gradient(90deg, var(--gold), white);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+/* Style des champs de ton premier code */
+.input-group { margin-bottom: 20px; }
+.input-group label { color: var(--gold); font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; display: block; text-transform: uppercase; }
+.input-group input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 12px;
+    padding: 12px 15px;
+    width: 100%;
+}
+.input-group input:focus { border-color: var(--gold) !important; outline: none; box-shadow: 0 0 10px rgba(250,204,21,0.2); }
+
+.btn-submit {
+    background: var(--gold);
+    color: var(--emerald);
+    font-weight: 800;
+    border-radius: 15px;
+    padding: 15px;
+    width: 100%;
+    border: none;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+.btn-submit:hover { transform: translateY(-3px); background: white; box-shadow: 0 10px 20px rgba(250,204,21,0.3); }
+
+/* Ton Loader original */
+.throbber-container { height: 4px; width: 100%; background: rgba(255,255,255,0.1); position: absolute; top: 0; left: 0; border-radius: 30px 30px 0 0; overflow: hidden; display: none; }
+.show-loader { display: block; }
+.throbber-line { width: 30%; height: 100%; background: var(--gold); animation: load 1.5s infinite; }
+@keyframes load { from { transform: translateX(-100%); } to { transform: translateX(400%); } }
+
+.auth-footer a { color: var(--gold); text-decoration: none; font-weight: 600; }
+.auth-footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+    <div class="glass-card">
+        <div class="throbber-container" id="mainLoader"><div class="throbber-line"></div></div>
+        
+        <div class="brand text-center mb-4">
+            <i class="fa-solid fa-lock-open mb-3" style="font-size: 2.5rem; color: var(--gold);"></i>
+            <h1>Connexion <span>Staff</span></h1>
+            <p class="text-secondary small">Accès sécurisé à l'administration</p>
+        </div>
+
+        <form action="#" method="POST" class="modern-form" id="loginForm">
+            <div class="input-group">
+                <label>Email Professionnel</label>
+                <input type="email" name="email" placeholder="votre@email.com" required>
+            </div>
+            <div class="input-group">
+                <label>Mot de passe</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="btn-submit" onclick="showLoader()">SE CONNECTER</button>
+        </form>
+        
+        <div class="auth-footer text-center mt-4 small">
+            <p class="text-secondary">Pas encore de compte ? <br> <a href="inscription_staff.html">S'inscrire ici</a></p>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="index.html" class="text-secondary opacity-75"><i class="fa-solid fa-house"></i> Accueil</a>
+        </div>
+    </div>
+
+    <script>
+        function showLoader(){ 
+            if(document.getElementById('loginForm').checkValidity()) {
+                document.getElementById('mainLoader').classList.add('show-loader'); 
+            }
+        }
+    </script>
+</body>
+</html>
