@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root { --gold: #facc15; --emerald: #064e3b; --dark: #020617; }
@@ -24,7 +25,6 @@
             position: relative;
         }
 
-        /* Effet de lueur animée identique à l'index */
         body::before {
             content: "";
             position: absolute;
@@ -117,6 +117,8 @@
         }
 
         .footer-link:hover { color: var(--gold); }
+        
+        .alert { font-size: 0.8rem; display: none; margin-bottom: 15px; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -129,11 +131,13 @@
     <h2 class="fw-800 mb-1">ADMIN</h2>
     <p class="text-secondary small mb-4">Espace sécurisé ELOHIM APPUI</p>
 
+    <div id="error-msg" class="alert alert-danger">Identifiants incorrects</div>
+
     <form id="loginForm">
-        <input type="text" id="user" class="form-control" placeholder="Identifiant" required>
+        <input type="email" id="user" class="form-control" placeholder="Email professionnel" required>
         <input type="password" id="pass" class="form-control" placeholder="Mot de passe" required>
         
-        <button type="submit" class="btn btn-gold mt-2">Se connecter</button>
+        <button type="submit" id="btnConnect" class="btn btn-gold mt-2">Se connecter</button>
     </form>
 
     <div class="mt-4 d-flex flex-column gap-2">
@@ -143,10 +147,42 @@
 </div>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    // Configuration Supabase
+    const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        // Redirection vers ton dashboard espace_staff.html
-        window.location.href = "espace_staff.html";
+        const email = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+        const btn = document.getElementById('btnConnect');
+        const errorMsg = document.getElementById('error-msg');
+
+        btn.innerText = "Vérification...";
+        btn.disabled = true;
+        errorMsg.style.display = "none";
+
+        try {
+            // On cherche l'utilisateur dans la table 'staff'
+            const { data, error } = await _supabase
+                .from('staff')
+                .select('*')
+                .eq('email', email)
+                .eq('mot_de_passe', pass)
+                .single();
+
+            if (error || !data) {
+                throw new Error("Identifiants incorrects");
+            }
+
+            // Si succès : On stocke le nom pour l'afficher sur le dashboard
+            localStorage.setItem('staff_nom', data.nom_complet);
+            window.location.href = "espace_staff.html";
+
+        } catch (err) {
+            errorMsg.style.display = "block";
+            btn.innerText = "Se connecter";
+            btn.disabled = false;
+        }
     });
 </script>
 
