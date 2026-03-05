@@ -3,61 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Staff | ELOHIM APPUI</title>
+    <title>Connexion Admin | ELOHIM APPUI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --gold: #facc15; --emerald: #064e3b; --dark: #020617; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #020617, #0f172a 40%, #064e3b); color: white; min-height: 100vh; }
-        .sidebar { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.1); min-height: 100vh; padding: 30px; }
-        .nav-link { color: #94a3b8; padding: 12px 20px; border-radius: 12px; margin-bottom: 5px; transition: 0.3s; text-decoration: none; display: block; }
-        .nav-link:hover, .nav-link.active { background: rgba(250, 204, 21, 0.1); color: var(--gold); }
-        .stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #020617, #0f172a 40%, #064e3b); color: white; min-height: 100vh; display:flex; justify-content:center; align-items:center; }
+        .card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 2rem; width: 400px; backdrop-filter: blur(10px); }
+        h2 { color: var(--gold); }
+        .form-control { margin-bottom: 1rem; border-radius: 10px; background: rgba(255,255,255,0.1); border:none; color:white; }
+        .form-control:focus { background: rgba(255,255,255,0.15); color:white; box-shadow:none; }
+        .btn-primary { width:100%; border-radius:10px; background: var(--gold); border:none; color:#020617; font-weight:600; }
+        .btn-primary:hover { background: #e6b800; }
+        .link { cursor: pointer; color: #00ffff; text-decoration: underline; display:block; margin-top:1rem; text-align:center; }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-2 sidebar">
-                <h4 class="fw-800 mb-5">ELOHIM <span style="color:var(--gold)">STAFF</span></h4>
-                <a href="#" class="nav-link active"><i class="fa-solid fa-gauge me-2"></i> Dashboard</a>
-                <a href="saisie_notes.html" class="nav-link"><i class="fa-solid fa-pen-to-square me-2"></i> Saisir Notes</a>
-                <a href="gestion_eleves.html" class="nav-link"><i class="fa-solid fa-users me-2"></i> Élèves</a>
-                <hr class="my-4" style="opacity: 0.1;">
-                <a href="index.html" class="nav-link text-danger"><i class="fa-solid fa-power-off me-2"></i> Déconnexion</a>
-            </div>
-
-            <div class="col-lg-10 p-5">
-                <div class="d-flex justify-content-between align-items-center mb-5">
-                    <div>
-                        <h2 class="fw-800 mb-0">Bienvenue, <span id="staffName" style="color:var(--gold)">...</span></h2>
-                        <p class="text-secondary">Voici l'état actuel de l'établissement</p>
-                    </div>
-                </div>
-
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="stat-card">
-                            <small class="text-secondary text-uppercase fw-bold">Total Élèves</small>
-                            <h2 class="fw-800 mt-2" id="countEleves">...</h2>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-card">
-                            <small class="text-secondary text-uppercase fw-bold">Moyenne Générale</small>
-                            <h2 class="fw-800 mt-2" style="color:var(--gold)">14.2</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="card text-center">
+        <h2>Portail Administration</h2>
+        <p>Connectez-vous pour accéder au dashboard</p>
+        <form id="loginForm">
+            <input type="text" class="form-control" placeholder="Nom d'utilisateur" required>
+            <input type="password" class="form-control" placeholder="Mot de passe" required>
+            <button type="submit" class="btn btn-primary">Se connecter</button>
+        </form>
+        <span class="link" id="createAccount">Créer un compte</span>
     </div>
 
     <script>
-        // Ton script Supabase pour charger le nom et les stats ici...
-        document.getElementById('staffName').innerText = localStorage.getItem('staff_nom') || 'Admin';
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', function(e){
+            e.preventDefault();
+            // Simulation connexion
+            alert('Connexion réussie ! Redirection vers le dashboard...');
+            window.location.href = 'espace_staff.html'; // ton dashboard actuel
+        });
+
+        document.getElementById('createAccount').addEventListener('click', function(){
+            alert('Redirection vers création de compte (simulation)');
+            // Ici tu pourrais créer une page create_account.html
+        });
     </script>
 </body>
 </html>
