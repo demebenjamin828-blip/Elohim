@@ -8,10 +8,8 @@
 </head>
 <body class="auth-body">
     <div class="glass-card animated-fade-in">
-        <div class="throbber-container" id="mainLoader">
-            <div class="throbber-line"></div>
-        </div>
-
+        <div class="throbber-container" id="mainLoader"><div class="throbber-line"></div></div>
+        
         <div class="brand">
             <i class="fa-solid fa-user-shield logo-icon"></i>
             <h2>Inscription <span>Administration</span></h2>
@@ -19,21 +17,12 @@
 
         <form action="#" method="POST" class="modern-form">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group">
-                    <label>Nom</label>
-                    <input type="text" name="nom" required>
-                </div>
-                <div class="input-group">
-                    <label>Prenom</label>
-                    <input type="text" name="prenom" required>
-                </div>
+                <div class="input-group"><label>Nom</label><input type="text" name="nom" required></div>
+                <div class="input-group"><label>Prenom</label><input type="text" name="prenom" required></div>
             </div>
-
-            <div class="input-group">
-                <label>Email Professionnel</label>
-                <input type="email" name="email" required>
-            </div>
-
+            
+            <div class="input-group"><label>Email Professionnel</label><input type="email" name="email" required></div>
+            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="input-group">
                     <label>Fonction</label>
@@ -42,28 +31,19 @@
                         <option value="Professeur">Professeur</option>
                     </select>
                 </div>
-                <div class="input-group">
-                    <label style="color:#facc15">Code Ecole</label>
-                    <input type="password" name="code_invitation" required>
-                </div>
+                <div class="input-group"><label style="color:#facc15">Code Ecole</label><input type="password" name="code_invitation" required></div>
             </div>
-
+            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group">
-                    <label>Mot de passe</label>
-                    <input type="password" name="password" required>
-                </div>
-                <div class="input-group">
-                    <label>Confirmation</label>
-                    <input type="password" name="password_confirm" required>
-                </div>
+                <div class="input-group"><label>Mot de passe</label><input type="password" name="password" required></div>
+                <div class="input-group"><label>Confirmation</label><input type="password" name="password_confirm" required></div>
             </div>
-
+            
             <button type="submit" class="btn-submit" onclick="showLoader()">CREER MON COMPTE</button>
             
             <div style="text-align: center; margin-top: 15px;">
-                <a href="index.html" style="color: white; text-decoration: none; font-size: 0.8em; opacity: 0.7;">
-                    <i class="fa-solid fa-arrow-left"></i> Retour à l'accueil
+                <a href="index.html" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.8rem;">
+                    <i class="fa-solid fa-arrow-left"></i> Retour au menu
                 </a>
             </div>
         </form>
