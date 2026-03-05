@@ -3,188 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration | ELOHIM APPUI</title>
-    
+    <title>Connexion Administration | ELOHIM APPUI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
         :root { --gold: #facc15; --emerald: #064e3b; --dark: #020617; }
-        
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: linear-gradient(135deg, #020617, #0f172a 40%, #064e3b);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
+            color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center;
         }
-
-        body::before {
-            content: "";
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, var(--gold), transparent 70%);
-            top: -150px;
-            right: -150px; opacity: 0.1;
-            animation: moveGlow 10s infinite alternate ease-in-out;
-        }
-
-        @keyframes moveGlow { from { transform: translate(0,0); } to { transform: translate(-100px, 100px); } }
-
         .login-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-            text-align: center;
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px; width: 100%; max-width: 400px; text-align: center;
         }
-
-        /* Style des boutons de choix */
-        .choice-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-            text-align: left;
-            color: white;
-        }
-
-        .choice-btn:hover {
-            border-color: var(--gold);
-            background: rgba(250, 204, 21, 0.1);
-            transform: scale(1.02);
-        }
-
-        .choice-btn i { font-size: 1.5rem; color: var(--gold); }
-
-        /* Le formulaire reste caché au début */
-        #loginSection { display: none; animation: fadeIn 0.5s; }
-
         .form-control {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1);
             color: white; border-radius: 12px; padding: 12px; margin-bottom: 15px;
         }
-
         .btn-gold {
             background: var(--gold); color: var(--dark); border: none;
-            border-radius: 12px; padding: 14px; font-weight: 800; width: 100%;
-            text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 12px; padding: 14px; font-weight: 800; width: 100%; transition: 0.3s;
         }
-
-        .alert { font-size: 0.8rem; display: none; margin-bottom: 15px; border-radius: 10px; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(250, 204, 21, 0.3); }
+        .toggle-link { color: var(--gold); text-decoration: none; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="login-card">
-    <h2 class="fw-800 mb-1">ESPACE <span style="color:var(--gold)">STAFF</span></h2>
-    <p class="text-secondary small mb-4">Gestion de l'établissement ELOHIM APPUI</p>
-
-    <div id="choiceSection">
-        <button class="choice-btn" onclick="showLogin()">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            <div>
-                <div class="fw-bold">Se connecter</div>
-                <div class="small text-secondary">Accéder à mon tableau de bord</div>
-            </div>
-        </button>
-
-        <a href="inscriptin_staff.html" style="text-decoration: none;">
-            <button class="choice-btn">
-                <i class="fa-solid fa-user-plus"></i>
-                <div>
-                    <div class="fw-bold">Créer un compte</div>
-                    <div class="small text-secondary">Nouveau membre de l'équipe</div>
-                </div>
-            </button>
-        </a>
-        
-        <a href="index.html" class="text-secondary small text-decoration-none mt-3 d-block">
-            <i class="fa-solid fa-arrow-left"></i> Retour à l'accueil
-        </a>
+    <div class="mb-4">
+        <i class="fa-solid fa-user-shield" style="font-size: 3rem; color: var(--gold);"></i>
     </div>
+    
+    <h2 class="fw-800 mb-1">CONNEXION</h2>
+    <p class="text-secondary small mb-4">Espace sécurisé ELOHIM APPUI</p>
 
-    <div id="loginSection">
-        <div id="error-msg" class="alert alert-danger">Identifiants incorrects</div>
-        
-        <form id="loginForm">
-            <input type="email" id="user" class="form-control" placeholder="Email professionnel" required>
-            <input type="password" id="pass" class="form-control" placeholder="Mot de passe" required>
-            <button type="submit" id="btnConnect" class="btn-gold">Entrer dans l'espace</button>
-        </form>
-        
-        <button class="btn btn-link text-secondary btn-sm mt-3" onclick="showChoices()">
-            <i class="fa-solid fa-chevron-left"></i> Retour aux options
-        </button>
+    <form id="loginForm">
+        <input type="email" id="email" class="form-control" placeholder="Email professionnel" required>
+        <input type="password" id="pass" class="form-control" placeholder="Mot de passe" required>
+        <button type="submit" id="btnLog" class="btn-gold">SE CONNECTER</button>
+    </form>
+
+    <div class="mt-4">
+        <p class="small text-secondary">
+            Nouveau membre ? <a href="inscriptin_staff.html" class="toggle-link">Créer un compte</a>
+        </p>
+        <a href="index.html" class="text-secondary small text-decoration-none">← Retour à l'accueil</a>
     </div>
 </div>
 
 <script>
-    // Navigation interne
-    function showLogin() {
-        document.getElementById('choiceSection').style.display = 'none';
-        document.getElementById('loginSection').style.display = 'block';
-    }
-    function showChoices() {
-        document.getElementById('choiceSection').style.display = 'block';
-        document.getElementById('loginSection').style.display = 'none';
-    }
-
-    // Ton script Supabase gardé tel quel
     const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
 
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('user').value;
-        const pass = document.getElementById('pass').value;
-        const btn = document.getElementById('btnConnect');
-        const errorMsg = document.getElementById('error-msg');
-
+        const btn = document.getElementById('btnLog');
         btn.innerText = "Vérification...";
-        btn.disabled = true;
-        errorMsg.style.display = "none";
+        
+        const { data, error } = await _supabase
+            .from('staff')
+            .select('*')
+            .eq('email', document.getElementById('email').value)
+            .eq('mot_de_passe', document.getElementById('pass').value)
+            .single();
 
-        try {
-            const { data, error } = await _supabase
-                .from('staff')
-                .select('*')
-                .eq('email', email)
-                .eq('mot_de_passe', pass)
-                .single();
-
-            if (error || !data) throw new Error("Erreur");
-
+        if (data) {
             localStorage.setItem('staff_nom', data.nom_complet);
             window.location.href = "espace_staff.html";
-
-        } catch (err) {
-            errorMsg.style.display = "block";
-            btn.innerText = "Entrer dans l'espace";
-            btn.disabled = false;
+        } else {
+            alert("Identifiants incorrects !");
+            btn.innerText = "SE CONNECTER";
         }
     });
 </script>
-
 </body>
 </html>
