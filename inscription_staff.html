@@ -10,82 +10,85 @@
 </head>
 <body class="auth-body">
 
-    <main class="glass-card animated-fade-in">
+    <a href="index.html" class="back-home">
+        <i class="fa-solid fa-arrow-left"></i> Accueil
+    </a>
+
+    <div class="glass-card animated-fade-in">
         <div class="throbber-container" id="mainLoader">
             <div class="throbber-line"></div>
         </div>
 
-        <header class="brand">
+        <div class="brand">
             <i class="fa-solid fa-user-shield logo-icon"></i>
             <h2>Inscription <span>Administration</span></h2>
-            <p class="subtitle">Créez votre accès sécurisé</p>
-        </header>
+            <p class="subtitle">Portail sécurisé ELOHIM</p>
+        </div>
 
-        <?php if (!empty($message)): ?>
-            <div class="message-container">
-                <?= $message; ?>
-            </div>
-        <?php endif; ?>
-
-        <form action="" method="POST" class="modern-form" id="staffForm">
+        <form action="#" method="GET" class="modern-form" id="registrationForm">
             
-            <div class="form-grid">
+            <div class="form-row-grid">
                 <div class="input-group">
-                    <label for="nom">Nom</label>
-                    <input type="text" id="nom" name="nom" placeholder="Ex: TRAORE" required>
+                    <label><i class="fa-solid fa-signature"></i> Nom</label>
+                    <input type="text" name="nom" placeholder="Ex: TRAORE" required>
                 </div>
                 <div class="input-group">
-                    <label for="prenom">Prénom</label>
-                    <input type="text" id="prenom" name="prenom" placeholder="Ex: Marc" required>
+                    <label>Prénom</label>
+                    <input type="text" name="prenom" placeholder="Ex: Moussa" required>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="email">Email Professionnel</label>
-                <input type="email" id="email" name="email" placeholder="contact@ecole.com" required>
+                <label><i class="fa-solid fa-envelope"></i> Email Professionnel</label>
+                <input type="email" name="email" placeholder="nom@elohim.com" required>
             </div>
 
-            <div class="form-grid">
+            <div class="form-row-grid">
                 <div class="input-group">
-                    <label for="role">Fonction</label>
-                    <select id="role" name="role" required>
-                        <option value="" disabled selected>Sélectionner...</option>
+                    <label><i class="fa-solid fa-briefcase"></i> Fonction</label>
+                    <select name="role" required>
+                        <option value="" disabled selected>Choisir...</option>
                         <option value="Administrateur">Administrateur</option>
                         <option value="Professeur">Professeur</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="code_invitation" style="color:#facc15">Code École</label>
-                    <input type="password" id="code_invitation" name="code_invitation" placeholder="••••••" required>
+                    <label style="color:#facc15"><i class="fa-solid fa-key"></i> Code École</label>
+                    <input type="password" name="code_invitation" placeholder="Code requis" required>
                 </div>
             </div>
 
-            <div class="form-grid">
+            <div class="form-row-grid">
                 <div class="input-group">
-                    <label for="password">Mot de passe</label>
-                    <input type="password" id="password" name="password" required>
+                    <label><i class="fa-solid fa-lock"></i> Mot de passe</label>
+                    <input type="password" name="password" required>
                 </div>
                 <div class="input-group">
-                    <label for="password_confirm">Confirmation</label>
-                    <input type="password" id="password_confirm" name="password_confirm" required>
+                    <label>Confirmation</label>
+                    <input type="password" name="password_confirm" required>
                 </div>
             </div>
 
             <button type="submit" class="btn-submit" onclick="showLoader()">
-                CRÉER MON COMPTE
+                CREER MON COMPTE
             </button>
-
-            <footer class="form-footer">
-                <p>Déjà membre ? <a href="login_staff.php">Se connecter</a></p>
-            </footer>
+            
+            <div class="form-footer">
+                <p>Déjà membre du staff ? <a href="login_staff.html">Se connecter</a></p>
+            </div>
         </form>
-    </main>
+    </div>
 
     <script>
-        function showLoader() {
-            const form = document.getElementById('staffForm');
+        function showLoader(){ 
+            const form = document.getElementById('registrationForm');
             if(form.checkValidity()) {
-                document.getElementById('mainLoader').classList.add('show-loader');
+                document.getElementById('mainLoader').classList.add('show-loader'); 
+                // Pour GitHub Pages, on simule une redirection après 2 secondes
+                setTimeout(() => {
+                    alert("Compte simulé avec succès ! (Mode démo GitHub)");
+                    window.location.href = "login_staff.html";
+                }, 2000);
             }
         }
     </script>
