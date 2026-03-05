@@ -1,27 +1,129 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Inscription Staff | ELOHIM</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription Staff | ELOHIM APPUI</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+/* CSS STRICTEMENT IDENTIQUE À TON INDEX.HTML */
+:root{
+--gold:#facc15;
+--emerald:#064e3b;
+--dark:#020617;
+}
+
+body{
+font-family:'Plus Jakarta Sans',sans-serif;
+background:linear-gradient(135deg,#020617,#0f172a 40%,#064e3b);
+color:white;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:absolute;
+width:600px;
+height:600px;
+background:radial-gradient(circle,var(--gold),transparent 70%);
+top:-200px;
+left:-200px;
+opacity:0.15;
+animation:moveGlow 12s infinite alternate ease-in-out;
+z-index: 0;
+}
+
+@keyframes moveGlow{
+from{transform:translate(0,0);}
+to{transform:translate(200px,150px);}
+}
+
+/* ADAPTATION DE TA GLASS-CARD AVEC LE STYLE DE L'INDEX */
+.glass-card {
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+border-radius:30px;
+padding:40px;
+border:1px solid rgba(255,255,255,0.1);
+transition:0.5s;
+position:relative;
+z-index: 1;
+width: 100%;
+max-width: 650px;
+}
+
+.glass-card:hover {
+box-shadow:0 25px 60px rgba(250,204,21,0.2);
+border-color:var(--gold);
+}
+
+.brand h2 span {
+background:linear-gradient(90deg,var(--gold),white);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+font-weight: 800;
+}
+
+/* STYLE DES INPUTS REPRIS DE TON PREMIER CODE */
+.input-group { margin-bottom: 15px; flex-direction: column; }
+.input-group label { color: var(--gold); font-weight: 600; font-size: 0.8rem; margin-bottom: 5px; text-transform: uppercase; }
+.input-group input, .input-group select {
+background: rgba(255,255,255,0.05) !important;
+border: 1px solid rgba(255,255,255,0.1) !important;
+color: white !important;
+border-radius: 12px;
+padding: 12px;
+width: 100%;
+}
+
+.btn-submit {
+background: var(--gold);
+color: var(--emerald);
+font-weight: 800;
+border-radius: 15px;
+padding: 15px;
+width: 100%;
+border: none;
+transition: 0.4s;
+margin-top: 10px;
+}
+
+.btn-submit:hover { transform: translateY(-3px); background: white; box-shadow: 0 10px 20px rgba(250,204,21,0.3); }
+
+/* TON LOADER ORIGINAL */
+.throbber-container { height: 4px; width: 100%; background: rgba(255,255,255,0.1); position: absolute; top: 0; left: 0; border-radius: 30px 30px 0 0; overflow: hidden; display: none; }
+.show-loader { display: block; }
+.throbber-line { width: 40%; height: 100%; background: var(--gold); animation: load 1.5s infinite; }
+@keyframes load { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+</style>
 </head>
-<body class="auth-body">
+
+<body>
+
     <div class="glass-card animated-fade-in">
         <div class="throbber-container" id="mainLoader"><div class="throbber-line"></div></div>
         
-        <div class="brand">
-            <i class="fa-solid fa-user-shield logo-icon"></i>
-            <h2>Inscription <span>Administration</span></h2>
+        <div class="brand text-center mb-4">
+            <i class="fa-solid fa-user-shield mb-2" style="font-size: 2.5rem; color: var(--gold);"></i>
+            <h2 style="font-weight: 800;">INSCRIPTION <span>STAFF</span></h2>
         </div>
 
         <form action="#" method="POST" class="modern-form">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group"><label>Nom</label><input type="text" name="nom" required></div>
-                <div class="input-group"><label>Prenom</label><input type="text" name="prenom" required></div>
+                <div class="input-group"><label>Nom</label><input type="text" name="nom" placeholder="Nom" required></div>
+                <div class="input-group"><label>Prenom</label><input type="text" name="prenom" placeholder="Prénom" required></div>
             </div>
             
-            <div class="input-group"><label>Email Professionnel</label><input type="email" name="email" required></div>
+            <div class="input-group"><label>Email Professionnel</label><input type="email" name="email" placeholder="email@elohim.com" required></div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="input-group">
@@ -31,7 +133,7 @@
                         <option value="Professeur">Professeur</option>
                     </select>
                 </div>
-                <div class="input-group"><label style="color:#facc15">Code Ecole</label><input type="password" name="code_invitation" required></div>
+                <div class="input-group"><label style="color:#facc15">Code Ecole</label><input type="password" name="code_invitation" placeholder="Code requis" required></div>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -39,11 +141,11 @@
                 <div class="input-group"><label>Confirmation</label><input type="password" name="password_confirm" required></div>
             </div>
             
-            <button type="submit" class="btn-submit" onclick="showLoader()">CREER MON COMPTE</button>
-            
-            <div style="text-align: center; margin-top: 15px;">
-                <a href="index.html" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.8rem;">
-                    <i class="fa-solid fa-arrow-left"></i> Retour au menu
+            <button type="submit" class="btn-submit" onclick="showLoader()">CRÉER MON COMPTE</button>
+
+            <div class="text-center mt-3">
+                <a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 0.8rem;">
+                    <i class="fa-solid fa-arrow-left"></i> Retour au portail
                 </a>
             </div>
         </form>
