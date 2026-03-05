@@ -147,7 +147,6 @@
 </div>
 
 <script>
-    // Configuration Supabase
     const _supabase = supabase.createClient('https://inrcrtyvbgjrrccpzxlk.supabase.co','sb_publishable_tEVOnHljw_fz5UC_cEG9pA_9xglC1VK');
 
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -162,7 +161,6 @@
         errorMsg.style.display = "none";
 
         try {
-            // On cherche l'utilisateur dans la table 'staff'
             const { data, error } = await _supabase
                 .from('staff')
                 .select('*')
@@ -174,7 +172,6 @@
                 throw new Error("Identifiants incorrects");
             }
 
-            // Si succès : On stocke le nom pour l'afficher sur le dashboard
             localStorage.setItem('staff_nom', data.nom_complet);
             window.location.href = "espace_staff.html";
 
