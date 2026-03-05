@@ -1,97 +1,182 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription Administration | ELOHIM</title>
-    
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription Administration | ELOHIM APPUI</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root{
+    --gold:#facc15;
+    --emerald:#064e3b;
+    --dark:#020617;
+}
+
+body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:linear-gradient(135deg,#020617,#0f172a 40%,#064e3b);
+    color:white;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 20px;
+}
+
+/* Glass Card */
+.auth-card{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(20px);
+    border-radius:30px;
+    padding:40px;
+    border:1px solid rgba(255,255,255,0.1);
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+.brand-title{
+    font-weight: 800;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Form Styles */
+label{
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-control, .form-select{
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: white !important;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.form-control:focus, .form-select:focus{
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 10px rgba(250,204,21,0.2) !important;
+}
+
+.btn-gold{
+    background: var(--gold);
+    color: var(--emerald);
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    transition: 0.3s;
+    margin-top: 20px;
+}
+
+.btn-gold:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(250,204,21,0.3);
+    background: white;
+}
+
+.back-link{
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Loader Animation */
+.loader-line {
+    height: 3px;
+    width: 100%;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    display: none;
+}
+.loader-line::after {
+    content: '';
+    position: absolute;
+    left: -50%;
+    height: 100%;
+    width: 50%;
+    background: var(--gold);
+    animation: loading 1.5s infinite;
+}
+@keyframes loading {
+    to { left: 100%; }
+}
+</style>
 </head>
-<body class="auth-body">
+<body>
 
-    <a href="index.html" class="back-link">
-        <i class="fa-solid fa-house"></i> Retour à l'accueil
-    </a>
+<div class="auth-card">
+    <div id="loader" class="loader-line"></div>
+    
+    <h2 class="brand-title"><i class="fa-solid fa-user-shield"></i> INSCRIPTION STAFF</h2>
 
-    <div class="glass-card animated-fade-in">
-        <div class="throbber-container" id="mainLoader">
-            <div class="throbber-line"></div>
+    <form id="regForm">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label>NOM</label>
+                <input type="text" class="form-control" placeholder="Nom" required>
+            </div>
+            <div class="col-md-6">
+                <label>PRÉNOM</label>
+                <input type="text" class="form-control" placeholder="Prénom" required>
+            </div>
+            <div class="col-md-12">
+                <label>EMAIL PROFESSIONNEL</label>
+                <input type="email" class="form-control" placeholder="exemple@elohim.com" required>
+            </div>
+            <div class="col-md-6">
+                <label>FONCTION</label>
+                <select class="form-select" required>
+                    <option value="" disabled selected>Choisir...</option>
+                    <option>Administrateur</option>
+                    <option>Professeur</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label style="color:var(--gold)">CODE ÉCOLE</label>
+                <input type="password" class="form-control" placeholder="••••••" required>
+            </div>
+            <div class="col-md-6">
+                <label>MOT DE PASSE</label>
+                <input type="password" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label>CONFIRMATION</label>
+                <input type="password" class="form-control" required>
+            </div>
         </div>
 
-        <div class="brand">
-            <i class="fa-solid fa-user-shield logo-icon"></i>
-            <h2>Inscription <span>Administration</span></h2>
-            <p class="subtitle">Créez votre accès sécurisé</p>
-        </div>
+        <button type="submit" class="btn-gold">CRÉER MON COMPTE</button>
+        
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Retour à l'accueil</a>
+    </form>
+</div>
 
-        <form id="staffForm" class="modern-form">
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group">
-                    <label><i class="fa-solid fa-user"></i> Nom</label>
-                    <input type="text" placeholder="Ex: TRAORE" required>
-                </div>
-                <div class="input-group">
-                    <label>Prénom</label>
-                    <input type="text" placeholder="Ex: Moussa" required>
-                </div>
-            </div>
+<script>
+document.getElementById('regForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('loader').style.display = 'block';
+    setTimeout(() => {
+        alert("Mode démo : Le design est validé ! Sur GitHub, le PHP ne peut pas enregistrer les données.");
+        document.getElementById('loader').style.display = 'none';
+    }, 2000);
+});
+</script>
 
-            <div class="input-group">
-                <label><i class="fa-solid fa-envelope"></i> Email Professionnel</label>
-                <input type="email" placeholder="nom@elohim.com" required>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group">
-                    <label><i class="fa-solid fa-briefcase"></i> Fonction</label>
-                    <select required>
-                        <option value="" disabled selected>Choisir...</option>
-                        <option value="Administrateur">Administrateur</option>
-                        <option value="Professeur">Professeur</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label style="color:#facc15"><i class="fa-solid fa-key"></i> Code École</label>
-                    <input type="password" placeholder="Code requis" required>
-                </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group">
-                    <label><i class="fa-solid fa-lock"></i> Mot de passe</label>
-                    <input type="password" required>
-                </div>
-                <div class="input-group">
-                    <label>Confirmation</label>
-                    <input type="password" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-submit">
-                CRÉER MON COMPTE
-            </button>
-            
-            <div class="form-footer">
-                <p>Déjà un compte ? <a href="login_staff.html">Se connecter</a></p>
-            </div>
-        </form>
-    </div>
-
-    <script>
-        // Gestion de l'animation comme sur ton index
-        document.getElementById('staffForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Empêche le rechargement car GitHub n'a pas de PHP
-            
-            document.getElementById('mainLoader').classList.add('show-loader');
-            
-            // Simulation d'inscription pour la démo GitHub
-            setTimeout(() => {
-                alert("Système en mode démonstration sur GitHub.\nLe compte ne sera pas créé en base de données sans serveur PHP.");
-                document.getElementById('mainLoader').classList.remove('show-loader');
-            }, 2000);
-        });
-    </script>
 </body>
 </html>
